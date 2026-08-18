@@ -1,3 +1,36 @@
+body {
+    /*overflow: hidden;*/
+}
+
 canvas {
     background-color: darkgrey;
+}
+
+.container {
+    display: flex;
+    flex-flow: column;
+    max-height: 100%;
+}
+
+.container .row.header {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+
+.container .row#display {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+
+.container .row.footer {
+    flex-grow: 0;
+    flex-shrink: 1;
+    flex-basis: auto;
+}
+
+#display {
+    max-width: 100%;
+    object-fit: contain;
 }
