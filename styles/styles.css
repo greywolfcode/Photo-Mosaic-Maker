@@ -7,52 +7,28 @@ canvas {
 }
 
 .container {
-    display: flex;
-    flex-flow: column;
+    display: grid;
+    grid-template-rows: auto auto;
+    grid-template-columns: auto auto auto;
+    grid-template-areas: 
+    'header header header'
+    'sidebar-left display sidebar-right';
     max-height: 100%;
 }
 
-.container .row.header {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: auto;
-}
-
-.container .row.footer {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: auto;
-}
-.container .row.editor {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
+.header {
+    grid-area: header;
 }
 
 #display {
     max-width: 100%;
+    grid-area: display;
     object-fit: contain;
 }
 
-.editor {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-
-    display: flex;
-    flex-flow: row;
-    justify-content: space-around;
-    max-width: 100%;
+#sidebar-left {
+    grid-area: sidebar-left;
 }
-.editor .column#display {
-    flex-grow: 1;
-    flex-shrink: 1;
-    flex-basis: auto;
-}
-
-.editor.sidebar {
-    flex-grow: 0;
-    flex-shrink: 1;
-    flex-basis: auto;
-    width: 10%;
+#sidebar-right {
+    grid-area: sidebar-right;
 }
