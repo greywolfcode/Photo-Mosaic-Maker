@@ -32,3 +32,8 @@ canvas {
 #sidebar-right {
     grid-area: sidebar-right;
 }
+
+.tiling-image {
+    max-width: 10%;
+    object-fit: contain;
+}

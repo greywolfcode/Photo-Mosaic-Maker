@@ -62,8 +62,9 @@ document.getElementById("imageInput").addEventListener("change", function(event)
 
         //create new canvas to store image
         const canvas = document.createElement("canvas");
-        const context = canvas.getContext("2d");
         canvas.setAttribute("id", file.name);
+        canvas.setAttribute("class", "tiling-image")
+        const context = canvas.getContext("2d");
         mosaic_images.set(file.name, canvas)
 
         const reader = new FileReader();
@@ -74,8 +75,8 @@ document.getElementById("imageInput").addEventListener("change", function(event)
             
             image.onload = function()
             {
-                context.width = image.width;
-                context.height = image.height;
+                canvas.width = image.width;
+                canvas.height = image.height;
                 
                 context.drawImage(image, 0, 0);
                 
