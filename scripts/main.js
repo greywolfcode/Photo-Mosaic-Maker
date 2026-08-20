@@ -87,6 +87,6 @@ document.getElementById("imageInput").addEventListener("change", function(event)
         
         reader.readAsDataURL(file);
 
-        document.getElementById("sidebar-left").appendChild(canvas);
+        document.getElementById("sidebar-left-content").appendChild(canvas);
     }
 });

@@ -26,6 +26,11 @@ canvas {
     object-fit: contain;
 }
 
+#sidebar-left-content {
+    display: flex;
+    flex-wrap: wrap;
+}
+
 #sidebar-left {
     grid-area: sidebar-left;
 }
