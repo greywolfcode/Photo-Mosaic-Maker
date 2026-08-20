@@ -7,6 +7,28 @@ const display_ctx = display.getContext("2d");
 //---------------
 const mosaic_images = new Map();
 
+// Mosaic Creation Functions
+//---------------------------
+function create_mosaic()
+{
+
+}
+/**
+ * Organises tiles into like colours
+ */
+function organise_tiles()
+{
+
+}
+/**
+ * Gets image to use based on target colour
+ * @param {*} target_color 
+ */
+function get_tile_(target_color)
+{
+
+}
+
 // Event Listeners
 //-----------------
 
@@ -92,5 +114,5 @@ document.getElementById("imageInput").addEventListener("change", function(event)
 
 document.getElementById("generate-button").addEventListener("click", function(event)
 {
-    console.log("Clicked!");
+    create_mosaic();
 });
