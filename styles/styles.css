@@ -9,7 +9,7 @@ canvas {
 .container {
     display: grid;
     grid-template-rows: auto auto;
-    grid-template-columns: auto auto auto;
+    grid-template-columns: 1fr 8fr 1fr;
     grid-template-areas: 
     'header header header'
     'sidebar-left display sidebar-right';
