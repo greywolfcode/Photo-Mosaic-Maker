@@ -29,6 +29,46 @@ function get_tile_(target_color)
 
 }
 
+/**
+ * Creates object to store image in
+ * @param {HTMLCanvasElement} image 
+ */
+function get_image_data(image)
+{
+    const width = image.width;
+    const height = image.height;
+    const total_pixels = width * height;
+    const context = image.getContext("2d");
+
+    let r = 0;
+    let g = 0;
+    let b = 0
+    let a = 0;
+
+    for (const y=0; y<height; y++)
+    {
+        for (const x=0; x<width; x++)
+        {
+            const pixel = context.getImageData(x, y, 1, 1);
+
+            //Convert to linear colour for better matching
+            r += pixel[0] ** 2;
+            g += pixel[1] ** 2;
+            b += pixel[2] ** 2;
+            a += pixel[3] ** 2;
+        }
+    }
+
+    r /= total_pixels;
+    g /= total_pixels;
+    b /= total_pixels;
+    a /= total_pixels;
+
+    const avg_colour = {"r": Math.sqrt(r), "g": Math.sqrt(g), "b": Math.sqrt(b), "a": Math.sqrt(a)};
+
+    return {"average colour": avg_colour};
+
+}
 // Event Listeners
 //-----------------
 
