@@ -7,6 +7,51 @@ const display_ctx = display.getContext("2d");
 //---------------
 const mosaic_images = new Map();
 
+// Helper Functions
+//------------------
+function rgb_to_hsv(rgb)
+{
+    //normalise values
+    const r = rgb[0] / 255;
+    const g = rgb[1] / 255;
+    const b = rgb[0] / 255;
+
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    const diff = max - min;
+
+    //calculate h
+    let h = 0;
+    if (max == min)
+    {
+        h = 0;
+    }
+    else if (max == r)
+    {
+        h = ((60 * ((g - b) / diff)) + 360) % 360;
+    }
+    else if (max == g)
+    {
+        h = ((60 * ((b - r) / diff)) + 120) % 360;
+    }
+    else if (max == b)
+    {
+        h = ((60 * ((r - g) / diff)) + 240) % 360;
+    }
+
+    //calulate s
+    let s = 0;
+    if (max != 0)
+    {
+        s = (diff/max) * 100;
+    }
+
+    //calulate v
+    let v = max * 100;
+
+    return {"h": h, "s": s, "v": v};
+}
+
 // Mosaic Creation Functions
 //---------------------------
 function create_mosaic()
