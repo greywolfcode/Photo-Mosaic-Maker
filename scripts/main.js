@@ -64,15 +64,44 @@ function rad_to_deg(rad)
 //---------------------------
 function create_mosaic()
 {
-    const tiles = organise_tiles();
+    //crop selected images for consistent size
+    const cropped_tiles = [];
+    for (const image of mosaic_images.values())
+    {
+        //get dimensiosn to crop to
+        let length = 0;
+        let crop_x = 0;
+        let crop_y = 0;
+        if (image.height < image.width)
+        {
+            length = image.height;
+            crop_x = (image.width - length) / 2;
+        }
+        else
+        {
+            length = image.width;
+            crop_y = (image.height - length) / 2;
+        }
+
+        //create new canvas to store cropped image
+        const new_canvas = document.createElement("canvas");
+        new_canvas.width = length;
+        new_canvas.height = length;
+        const context = new_canvas.getContext("2d");
+        context.drawImage(image, crop_x, crop_y, length, length, 0, 0, length, length)
+
+        cropped_tiles.append(new_canvas);
+    }
+
+    const tiles = organise_tiles(cropped_tiles);
 }
 /**
  * Organises tiles into like colours
  */
-function organise_tiles()
+function organise_tiles(tiles)
 {
     let tiles = {"r": [], "y": [], "g": [], "c": [], "b": [], "m": []};
-    for (const image of mosaic_images.values())
+    for (const image of tiles)
     {
         const data = get_image_data(image);
         if (data[0] < 60 || data >= 360)
