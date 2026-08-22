@@ -109,14 +109,37 @@ function create_mosaic()
     }
 
     const tiles = organise_tiles(cropped_tiles);
+
+    //create new image with photo for each pixel
+    const canvas = document.createElement("canvas");
+    canvas.width = display.width * 1080;
+    canvas.height = display.height * 1080;
+    const context = canvas.getContext("2d");
+
+    for (const y=0; y<height; y++)
+    {
+        for (const x=0; x<width; x++)
+        {
+            const pixel_colour = rgb_to_hsv(display_ctx.getImageData(x, y, 1, 1));
+            const image_pixel = get_tile(pixel_colour, tiles);
+            context.drawImage(image_pixel, 1080 * x, 1080 * y);
+
+        }
+    }
+
+    //replace display image with the new image
+    display_ctx.clearRect(0, 0, diaplay.width, display.height);
+    display.width = canvas.width;
+    display.height = canvas.height;
+     context.drawImage(canvas, 0,0);
 }
 /**
  * Organises tiles into like colours
  */
-function organise_tiles(tiles)
+function organise_tiles(unsorted_tiles)
 {
     let tiles = {"r": [], "y": [], "g": [], "c": [], "b": [], "m": []};
-    for (const image of tiles)
+    for (const image of unsorted_tiles)
     {
         const data = get_image_data(image);
         if (data[0] < 60 || data >= 360)
@@ -151,7 +174,7 @@ function organise_tiles(tiles)
  * Gets image to use based on target colour
  * @param {*} target_color 
  */
-function get_tile_(target_color, tiles)
+function get_tile(target_color, tiles)
 {
     let colours = [];
     if (target_color[0] < 60 || target_color >= 360)
