@@ -64,14 +64,44 @@ function rad_to_deg(rad)
 //---------------------------
 function create_mosaic()
 {
-
+    const tiles = organise_tiles();
 }
 /**
  * Organises tiles into like colours
  */
 function organise_tiles()
 {
+    let tiles = {"r": [], "y": [], "g": [], "c": [], "b": [], "m": []};
+    for (const image of mosaic_images.values())
+    {
+        const data = get_image_data(image);
+        if (data[0] < 60 || data >= 360)
+        {
+            tiles["r"].append(data);
+        }
+        else if (data[0] < 120)
+        {
+            tiles["y"].append(data);
+        }
+        else if (data[0] < 180)
+        {
+            tiles["g"].append(data);
+        }
+        else if (data[0] < 240)
+        {
+            tiles["c"].append(data);
+        }
+        else if (data[0] < 300)
+        {
+            tiles["b"].append(data);
+        }
+        else if (data[0] < 360)
+        {
+            tiles["m"].append(data);
+        }
+    }
 
+    return tiles;
 }
 /**
  * Gets image to use based on target colour
@@ -123,7 +153,7 @@ function get_image_data(image)
 
     const avg_colour = {"h": h, "s": s, "v": v};
 
-    return {"average colour": avg_colour};
+    return {"average colour": avg_colour, "data": image, "uses": 0};
 }
 // Event Listeners
 //-----------------
