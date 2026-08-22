@@ -87,8 +87,15 @@ function create_mosaic()
         const new_canvas = document.createElement("canvas");
         new_canvas.width = length;
         new_canvas.height = length;
-        const context = new_canvas.getContext("2d");
-        context.drawImage(image, crop_x, crop_y, length, length, 0, 0, length, length)
+        const new_context = new_canvas.getContext("2d");
+        new_context.drawImage(image, crop_x, crop_y, length, length, 0, 0, length, length)
+
+        //shrink canvas to standard size
+        const shrunk_canvas = document.createElement("canvas");
+        shrunk_canvas.width = 1080;
+        shrunk_canvas.height = 1080;
+        const shrunk_context = shrunk_canvas.getContext("2d"); 
+        shrunk_context.drawImage(new_canvas, 0, 0, 1080, 1080)
 
         cropped_tiles.append(new_canvas);
     }
