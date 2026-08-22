@@ -51,6 +51,14 @@ function rgb_to_hsv(rgb)
 
     return {"h": h, "s": s, "v": v};
 }
+function deg_to_rad(deg)
+{
+    return deg * (Math.PI / 180);
+}
+function rad_to_deg(rad)
+{
+    return rad * (180 / Math.PI);
+} 
 
 // Mosaic Creation Functions
 //---------------------------
@@ -85,34 +93,37 @@ function get_image_data(image)
     const total_pixels = width * height;
     const context = image.getContext("2d");
 
-    let r = 0;
-    let g = 0;
-    let b = 0
-    let a = 0;
+    //needd to do trigonometric cicular mean for hue since it is in degrees
+    let h_sin = 0;
+    let h_cos = 0;
+    let s = 0;
+    let v = 0;
 
     for (const y=0; y<height; y++)
     {
         for (const x=0; x<width; x++)
         {
             const pixel = context.getImageData(x, y, 1, 1);
+            const hsv = rgb_to_hsv(pixel);
 
-            //Convert to linear colour for better matching
-            r += pixel[0] ** 2;
-            g += pixel[1] ** 2;
-            b += pixel[2] ** 2;
-            a += pixel[3] ** 2;
+            h_sin += Math.sin(deg_to_rad(hsv[0]));
+            h_cos += Math.cos(deg_to_rad(hsv[0]));
+            s += hsv[1];
+            v += hsv[2];
         }
     }
 
-    r /= total_pixels;
-    g /= total_pixels;
-    b /= total_pixels;
-    a /= total_pixels;
+    h = rad_to_deg(Math.atan2(h_sin, h_cos));
+    //normalise to ragne (0, 360)
+    //min is 0 so it deosn't need to be included
+    h = (((h % 360) + 360) % 360);
 
-    const avg_colour = {"r": Math.sqrt(r), "g": Math.sqrt(g), "b": Math.sqrt(b), "a": Math.sqrt(a)};
+    s /= total_pixels;
+    v /= total_pixels;
+
+    const avg_colour = {"h": h, "s": s, "v": v};
 
     return {"average colour": avg_colour};
-
 }
 // Event Listeners
 //-----------------
