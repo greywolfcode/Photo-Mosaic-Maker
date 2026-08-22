@@ -59,6 +59,14 @@ function rad_to_deg(rad)
 {
     return rad * (180 / Math.PI);
 } 
+function hsv_diff(colour_one, colour_two)
+{
+    const h_diff = 180 - Math.abs(Math.abs(colour_one[0] - colour_two[0]) - 180);
+    const s_diff = Math.abs(colour_one[1] - colour_two[1]);
+    const v_diff = Math.abs(colour_one[2] - colour_two[2]);
+
+    return Math.sqrt(0.5 * (h_diff ** 2) + 0.2 * (s_diff ** 2) + 0.2 * (v_diff ** 2))
+}
 
 // Mosaic Creation Functions
 //---------------------------
@@ -143,9 +151,43 @@ function organise_tiles(tiles)
  * Gets image to use based on target colour
  * @param {*} target_color 
  */
-function get_tile_(target_color)
+function get_tile_(target_color, tiles)
 {
+    let colours = [];
+    if (target_color[0] < 60 || target_color >= 360)
+    {
+        colours = tiles["r"];
+    }
+    else if (target_color[0] < 120)
+    {
+        colours = tiles["y"];
+    }
+    else if (target_color[0] < 180)
+    {
+        colours = tiles["g"];
+    }
+    else if (target_color[0] < 240)
+    {
+        colours = tiles["c"];
+    }
+    else if (target_color[0] < 300)
+    {
+        colours = tiles["b"];
+    }
+    else if (target_color[0] < 360)
+    {
+        colours = tiles["m"];
+    }
 
+    colours.sort((a, b) => {
+        const a_dist = hsv_diff(a, target_color);
+        const b_dist = hsv_diff(b, target_color);
+
+        //want smallest distance
+        return a_dist - b_dist;
+    })
+
+    return colours[0];
 }
 
 /**
