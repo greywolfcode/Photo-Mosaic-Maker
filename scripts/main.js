@@ -105,7 +105,7 @@ function create_mosaic()
         const shrunk_context = shrunk_canvas.getContext("2d"); 
         shrunk_context.drawImage(new_canvas, 0, 0, 1080, 1080)
 
-        cropped_tiles.append(new_canvas);
+        cropped_tiles.push(new_canvas);
     }
 
     const tiles = organise_tiles(cropped_tiles);
@@ -116,9 +116,9 @@ function create_mosaic()
     canvas.height = display.height * 1080;
     const context = canvas.getContext("2d");
 
-    for (const y=0; y<height; y++)
+    for (let y=0; y<height; y++)
     {
-        for (const x=0; x<width; x++)
+        for (let x=0; x<width; x++)
         {
             const pixel_colour = rgb_to_hsv(display_ctx.getImageData(x, y, 1, 1));
             const image_pixel = get_tile(pixel_colour, tiles);
@@ -131,7 +131,7 @@ function create_mosaic()
     display_ctx.clearRect(0, 0, diaplay.width, display.height);
     display.width = canvas.width;
     display.height = canvas.height;
-     context.drawImage(canvas, 0,0);
+    context.drawImage(canvas, 0,0);
 }
 /**
  * Organises tiles into like colours
@@ -230,9 +230,9 @@ function get_image_data(image)
     let s = 0;
     let v = 0;
 
-    for (const y=0; y<height; y++)
+    for (let y=0; y<height; y++)
     {
-        for (const x=0; x<width; x++)
+        for (let x=0; x<width; x++)
         {
             const pixel = context.getImageData(x, y, 1, 1);
             const hsv = rgb_to_hsv(pixel);
