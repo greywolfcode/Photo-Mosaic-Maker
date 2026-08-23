@@ -19,6 +19,7 @@ generation_worker.onmessage = (e) => {
 
 // Image storage
 //---------------
+const allowed_images = ["png", "jpeg", "jpg", "webp", "bmp"]
 const mosaic_images = new Map();
 
 // Event Listeners
@@ -34,6 +35,11 @@ document.getElementById("fileInput").addEventListener("change", function(event)
         return;
     }
     if (!file.type.startsWith("image/"))
+    {
+        return;
+    }
+    //browser can't handle all iamge formats
+    else if (!allowed_images.includes(file.name.split(".").pop().toLowerCase()))
     {
         return;
     }
@@ -68,7 +74,12 @@ document.getElementById("imageInput").addEventListener("change", function(event)
         {
             return;
         }
-        if (!file.type.startsWith("image/"))
+        else if (!file.type.startsWith("image/"))
+        {
+            return;
+        }
+        //browser can't handle all iamge formats
+        else if (!allowed_images.includes(file.name.split(".").pop().toLowerCase()))
         {
             return;
         }
