@@ -115,7 +115,15 @@ document.getElementById("imageInput").addEventListener("change", function(event)
     }
 });
 
-document.getElementById("generate-button").addEventListener("click", function(event)
+document.getElementById("generate-button").addEventListener("click", async function(event)
 {
-    generation_worker.postMessage([mosaic_images, display]);
+    //convert images to offscreen canvases 
+    const offscreen_display = await createImageBitmap(display);
+    const offscreen_mosaic_images = [];
+    for (const image of mosaic_images.values())
+    {
+        offscreen_mosaic_images.push(await createImageBitmap(image));
+    }
+
+    generation_worker.postMessage({"mosaic_images": offscreen_mosaic_images, "display": offscreen_display}, [...offscreen_mosaic_images, offscreen_display]);
 });
