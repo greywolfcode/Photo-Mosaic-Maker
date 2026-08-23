@@ -2,7 +2,7 @@
 //----------------------------
 onmessage = async function(e) 
 {
-  const mosaic = create_mosaic(e.display, e.mosaic_images);
+  const mosaic = create_mosaic(e.data.mosaic_images, e.data.display);
   postMessage(await createImageBitmap(mosaic));
 };
 
@@ -72,10 +72,10 @@ function hsv_diff(colour_one, colour_two)
 function create_mosaic(mosaic_images, display)
 {
     //create canvas to store display
-    const display_canvas = new OffscreenCanvas(image.width, image.height)
+    const display_canvas = new OffscreenCanvas(display.width, display.height)
     display_canvas.width = display.width
     display_canvas.height = display.height;
-    const display_ctx = canvas.getContext("2d")
+    const display_ctx = display_canvas.getContext("2d")
     display_ctx.drawImage(display, 0, 0)
 
     //crop selected images for consistent size
