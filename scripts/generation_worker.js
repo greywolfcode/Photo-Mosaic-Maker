@@ -1,8 +1,9 @@
 // Worker Messaging Functions
 //----------------------------
-onmessage = (e) => {
-  const mosaic = create_mosaic(e[0], e[1]);
-  postMessage(mosaic);
+onmessage = async function(e) 
+{
+  const mosaic = create_mosaic(e.display, e.mosaic_images);
+  postMessage(await createImageBitmap(mosaic));
 };
 
 // Helper Functions
@@ -70,6 +71,13 @@ function hsv_diff(colour_one, colour_two)
 //---------------------------
 function create_mosaic(mosaic_images, display)
 {
+    //create canvas to store display
+    const display_canvas = new OffscreenCanvas(image.width, image.height)
+    display_canvas.width = display.width
+    display_canvas.height = display.height;
+    const display_ctx = canvas.getContext("2d")
+    display_ctx.drawImage(display, 0, 0)
+
     //crop selected images for consistent size
     const cropped_tiles = [];
     for (const image of mosaic_images.values())
@@ -110,8 +118,8 @@ function create_mosaic(mosaic_images, display)
 
     //create new image with photo for each pixel
     const canvas = document.createElement("canvas");
-    canvas.width = display.width * 1080;
-    canvas.height = display.height * 1080;
+    canvas.width = display_canvas.width * 1080;
+    canvas.height = display_canvas.height * 1080;
     const context = canvas.getContext("2d");
 
     for (let y=0; y<height; y++)
@@ -208,14 +216,21 @@ function get_tile(target_color, tiles)
 
 /**
  * Creates object to store image in
- * @param {HTMLCanvasElement} image 
+ * @param {ImageBitmap} image 
  */
 function get_image_data(image)
 {
+    //draw to canvs
+    const canvas = new OffscreenCanvas(image.width, image.height)
+    canvas.width = image.width
+    canvas.height = image.height;
+    const context = canvas.getContext("2d")
+    context.drawImage(image, 0, 0)
+
+
     const width = image.width;
     const height = image.height;
     const total_pixels = width * height;
-    const context = image.getContext("2d");
 
     //needd to do trigonometric cicular mean for hue since it is in degrees
     let h_sin = 0;
@@ -247,5 +262,5 @@ function get_image_data(image)
 
     const avg_colour = {"h": h, "s": s, "v": v};
 
-    return {"average colour": avg_colour, "data": image, "uses": 0};
+    return {"average colour": avg_colour, "data": canvas, "uses": 0};
 }
