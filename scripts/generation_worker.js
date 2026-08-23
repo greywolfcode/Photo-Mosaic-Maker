@@ -73,8 +73,6 @@ function create_mosaic(mosaic_images, display)
 {
     //create canvas to store display
     const display_canvas = new OffscreenCanvas(display.width, display.height)
-    display_canvas.width = display.width
-    display_canvas.height = display.height;
     const display_ctx = display_canvas.getContext("2d")
     display_ctx.drawImage(display, 0, 0)
 
@@ -98,16 +96,12 @@ function create_mosaic(mosaic_images, display)
         }
 
         //create new canvas to store cropped image
-        const new_canvas = document.createElement("canvas");
-        new_canvas.width = length;
-        new_canvas.height = length;
+        const new_canvas = new OffscreenCanvas(length, length)
         const new_context = new_canvas.getContext("2d");
         new_context.drawImage(image, crop_x, crop_y, length, length, 0, 0, length, length)
 
         //shrink canvas to standard size
-        const shrunk_canvas = document.createElement("canvas");
-        shrunk_canvas.width = 1080;
-        shrunk_canvas.height = 1080;
+        const shrunk_canvas = new OffscreenCanvas(1080, 1080)
         const shrunk_context = shrunk_canvas.getContext("2d"); 
         shrunk_context.drawImage(new_canvas, 0, 0, 1080, 1080)
 
@@ -222,8 +216,6 @@ function get_image_data(image)
 {
     //draw to canvs
     const canvas = new OffscreenCanvas(image.width, image.height)
-    canvas.width = image.width
-    canvas.height = image.height;
     const context = canvas.getContext("2d")
     context.drawImage(image, 0, 0)
 
