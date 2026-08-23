@@ -3,7 +3,7 @@
 onmessage = async function(e) 
 {
   const mosaic = create_mosaic(e.data.mosaic_images, e.data.display);
-  postMessage(await createImageBitmap(mosaic));
+  postMessage(await createImageBitmap(mosaic), [mosaic]);
 };
 
 // Helper Functions
@@ -127,6 +127,7 @@ function create_mosaic(mosaic_images, display)
         }
     }
 
+    return canvas;
 }
 /**
  * Organises tiles into like colours

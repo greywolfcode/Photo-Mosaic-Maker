@@ -9,7 +9,7 @@ const generation_worker = new Worker(new URL("/scripts/generation_worker.js", wi
 
 // Worker Messaging Functions
 generation_worker.onmessage = (e) => {
-    const mosaic = e;
+    const mosaic = e.data;
     //replace display image with the new image
     display_ctx.clearRect(0, 0, display.width, display.height);
     display.width = mosaic.width;
