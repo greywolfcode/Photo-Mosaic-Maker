@@ -2,6 +2,7 @@
 //---------------------
 const display = document.getElementById("display");
 const display_ctx = display.getContext("2d");
+const creating_dialog = document.getElementById("creating_dialog");
 
 // Worker Storage
 //----------------
@@ -15,6 +16,8 @@ generation_worker.onmessage = (e) => {
     display.width = mosaic.width;
     display.height = mosaic.height;
     context.drawImage(mosaic, 0,0);
+
+    creating_dialog.close()
 };
 
 // Image storage
@@ -117,6 +120,8 @@ document.getElementById("imageInput").addEventListener("change", function(event)
 
 document.getElementById("generate-button").addEventListener("click", async function(event)
 {
+    creating_dialog.showModal();
+
     //convert images to offscreen canvases 
     const offscreen_display = await createImageBitmap(display);
     const offscreen_mosaic_images = [];
@@ -126,4 +131,9 @@ document.getElementById("generate-button").addEventListener("click", async funct
     }
 
     generation_worker.postMessage({"mosaic_images": offscreen_mosaic_images, "display": offscreen_display}, [...offscreen_mosaic_images, offscreen_display]);
+});
+
+creating_dialog.addEventListener("cancel", function(event)
+{
+    event.preventDefault();
 });
