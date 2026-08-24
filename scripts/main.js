@@ -3,6 +3,9 @@
 const display = document.getElementById("display");
 const display_ctx = display.getContext("2d");
 const creating_dialog = document.getElementById("creating_dialog");
+const dialog_info = document.getElementById("dialog_info");
+let current_progress_bar = null;
+
 
 // Worker Storage
 //----------------
@@ -10,14 +13,38 @@ const generation_worker = new Worker(new URL("/scripts/generation_worker.js", wi
 
 // Worker Messaging Functions
 generation_worker.onmessage = (e) => {
-    const mosaic = e.data;
-    //replace display image with the new image
-    display_ctx.clearRect(0, 0, display.width, display.height);
-    display.width = mosaic.width;
-    display.height = mosaic.height;
-    context.drawImage(mosaic, 0,0);
 
-    creating_dialog.close()
+    switch (e.data.type) 
+    {
+        case "mosaic":
+            const mosaic = e.data.data;
+            //replace display image with the new image
+            display_ctx.clearRect(0, 0, display.width, display.height);
+            display.width = mosaic.width;
+            display.height = mosaic.height;
+            context.drawImage(mosaic, 0,0);
+
+            creating_dialog.close()
+
+            //reset popup dialog
+            current_progress_bar = null;
+            dialog_info.replaceChildren();
+
+            break;
+        case "update_text":
+            const info = e.data.data;
+            dialog_info.append(info);
+            break;
+        case "add_progress_bar":
+            current_progress_bar = document.createElement("progress");
+            current_progress_bar.value = 0.0;
+            current_progress_bar.max = 1.0;
+            dialog_info.appendChild(current_progress_bar);
+            break;
+        case "update_progress_bar":
+            current_progress_bar.value = e.data.data;
+            break;
+    }
 };
 
 // Image storage

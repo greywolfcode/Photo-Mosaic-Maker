@@ -2,8 +2,9 @@
 //----------------------------
 onmessage = async function(e) 
 {
-  const mosaic = create_mosaic(e.data.mosaic_images, e.data.display);
-  postMessage(await createImageBitmap(mosaic), [mosaic]);
+    postMessage({"type": "update_text", "data": "Cropping tile photos..."});
+    const mosaic = create_mosaic(e.data.mosaic_images, e.data.display);
+    postMessage({"type": "mosaic", "data": await createImageBitmap(mosaic)}, [mosaic]);
 };
 
 // Helper Functions
@@ -77,7 +78,9 @@ function create_mosaic(mosaic_images, display)
     display_ctx.drawImage(display, 0, 0)
 
     //crop selected images for consistent size
+    postMessage({"type": "add_progress_bar"});
     const cropped_tiles = [];
+    let count = 0
     for (const image of mosaic_images.values())
     {
         //get dimensiosn to crop to
@@ -106,8 +109,12 @@ function create_mosaic(mosaic_images, display)
         shrunk_context.drawImage(new_canvas, 0, 0, 1080, 1080)
 
         cropped_tiles.push(new_canvas);
+
+        count++;
+        postMessage({"type": "update_progress_bar", "data": count/mosaic_images.length});
     }
 
+    postMessage({"type": "update_text", "data": "\nOrganising tiles..."});
     const tiles = organise_tiles(cropped_tiles);
 
     //create new image with photo for each pixel
@@ -116,6 +123,10 @@ function create_mosaic(mosaic_images, display)
     canvas.height = display_canvas.height * 1080;
     const context = canvas.getContext("2d");
 
+    postMessage({"type": "update_text", "data": "\nWriting mosaic tiles..."});
+    postMessage({"type": "add_progress_bar"});
+    count = 0;
+    total_pixels = canvas.width * canvas.height;
     for (let y=0; y<height; y++)
     {
         for (let x=0; x<width; x++)
@@ -124,6 +135,8 @@ function create_mosaic(mosaic_images, display)
             const image_pixel = get_tile(pixel_colour, tiles);
             context.drawImage(image_pixel, 1080 * x, 1080 * y);
 
+            count++;
+            postMessage({"type": "update_progress_bar", "data": count/total_pixels});
         }
     }
 
@@ -134,7 +147,9 @@ function create_mosaic(mosaic_images, display)
  */
 function organise_tiles(unsorted_tiles)
 {
+    postMessage({"type": "add_progress_bar"});
     let tiles = {"r": [], "y": [], "g": [], "c": [], "b": [], "m": []};
+    let count = 0
     for (const image of unsorted_tiles)
     {
         const data = get_image_data(image);
@@ -162,6 +177,9 @@ function organise_tiles(unsorted_tiles)
         {
             tiles["m"].append(data);
         }
+
+        count++;
+        postMessage({"type": "update_progress_bar", "data": count/unsorted_tiles.length});
     }
 
     return tiles;
@@ -219,12 +237,12 @@ function get_image_data(image)
     const canvas = new OffscreenCanvas(image.width, image.height)
     const context = canvas.getContext("2d")
     context.drawImage(image, 0, 0)
-
-
+    
+    
     const width = image.width;
     const height = image.height;
     const total_pixels = width * height;
-
+    
     //needd to do trigonometric cicular mean for hue since it is in degrees
     let h_sin = 0;
     let h_cos = 0;

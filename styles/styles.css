@@ -16,6 +16,10 @@ canvas {
     max-height: 100%;
 }
 
+#dialog_info {
+    white-space: pre-wrap;
+}
+
 .header {
     grid-area: header;
 }
