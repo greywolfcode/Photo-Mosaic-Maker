@@ -12,7 +12,7 @@
   },
   "license": "MIT",
   "author": "greywolfcode",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
     "dev": "vite",
