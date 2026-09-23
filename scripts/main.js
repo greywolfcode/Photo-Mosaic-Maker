@@ -9,7 +9,10 @@ let current_progress_bar = null;
 
 // Worker Storage
 //----------------
-const generation_worker = new Worker(new URL("/scripts/generation_worker.js", window.location.origin));
+const generation_worker = new Worker(
+  new URL("/scripts/generation_worker.js",  import.meta.url), 
+  { type: 'module' }
+);
 
 // Worker Messaging Functions
 generation_worker.onmessage = (e) => {
