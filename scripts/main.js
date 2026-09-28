@@ -9,6 +9,8 @@ const grid_ctx = grid.getContext("2d");
 const xSlider = document.getElementById("x-slider");
 const ySlider = document.getElementById("y-slider");
 
+const hideGrid = document.getElementById("hide-grid");
+
 const creating_dialog = document.getElementById("creating_dialog");
 const dialog_info = document.getElementById("dialog_info");
 let current_progress_bar = null;
@@ -214,4 +216,15 @@ xSlider.addEventListener('input', function(event) {
 
 ySlider.addEventListener('input', function(event) {
     drawGridPercent(grid, grid_ctx, xSlider.value / 100, this.value / 100)
+});
+
+hideGrid.addEventListener('change', (event) => {
+    if (event.target.checked) 
+    {
+        grid.hidden = true;
+    } 
+    else 
+    {
+        grid.hidden = false;
+    }
 });
