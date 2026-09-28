@@ -2,6 +2,13 @@
 //---------------------
 const display = document.getElementById("display");
 const display_ctx = display.getContext("2d");
+
+const grid = document.getElementById("grid");
+const grid_ctx = grid.getContext("2d");
+
+const xSlider = document.getElementById("x-slider");
+const ySlider = document.getElementById("y-slider");
+
 const creating_dialog = document.getElementById("creating_dialog");
 const dialog_info = document.getElementById("dialog_info");
 let current_progress_bar = null;
@@ -55,6 +62,32 @@ generation_worker.onmessage = (e) => {
 const allowed_images = ["png", "jpeg", "jpg", "webp", "bmp"]
 const mosaic_images = new Map();
 
+// Drawing Functions
+//-------------------
+
+//draws grid every percent of width and height
+function drawGridPercent(canvas, context, xPercent, yPercent)
+{
+    context.clearRect(0, 0, canvas.width, canvas.height);
+    context.beginPath();
+
+    const xSpacing = canvas.width * xPercent;
+    const ySpacing = canvas.height * yPercent;
+
+    for (let x=1; x<canvas.width; x+=xSpacing)
+    {
+        context.moveTo(x, 0);
+        context.lineTo(x, canvas.height);
+        context.stroke();   
+    } 
+    for (let y=1; y<canvas.height; y+=ySpacing)
+    {
+        context.moveTo(0, y);
+        context.lineTo(canvas.width, y);
+        context.stroke();        
+    }
+}
+
 // Event Listeners
 //-----------------
 
@@ -88,6 +121,13 @@ document.getElementById("fileInput").addEventListener("change", function(event)
         {
             display.width = image.width;
             display.height = image.height;
+
+            //need to set grid canvas so grid stays the same size
+            grid.width = image.width;
+            grid.height = image.height;
+            
+            //redraw grid
+            drawGridPercent(grid, grid_ctx, xSlider.value / 100, ySlider.value / 100)
             
             display_ctx.drawImage(image, 0, 0);
             
@@ -166,4 +206,12 @@ document.getElementById("generate-button").addEventListener("click", async funct
 creating_dialog.addEventListener("cancel", function(event)
 {
     event.preventDefault();
+});
+
+xSlider.addEventListener('input', function(event) {
+    drawGridPercent(grid, grid_ctx, this.value / 100, ySlider.value / 100)
+});
+
+ySlider.addEventListener('input', function(event) {
+    drawGridPercent(grid, grid_ctx, xSlider.value / 100, this.value / 100)
 });
