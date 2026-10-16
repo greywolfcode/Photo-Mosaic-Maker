@@ -67,27 +67,53 @@ const mosaic_images = new Map();
 // Drawing Functions
 //-------------------
 
+function findSpacing(percentage, size)
+{
+    if (percentage >= 100)
+    {
+        return size;
+    }
+    //make sure it isn't less than 1px wide
+    else if (percentage <= 1 || (percentage / 100) * size <= 1)
+    {
+        return 1;
+    }
+
+    const nIdeal = 100 / percentage;
+
+    const nHigh = Math.ceil(nIdeal);
+    const nLow = Math.floor(nIdeal);
+
+    const percentHigh = 100 / nHigh;
+    //default to 1 so it is always at least 1px big
+    const percentLow = (nLow === 0) ? 1 : 100 / nLow;
+
+    const percentFinal = ((Math.abs(percentage - percentLow) < Math.abs(percentage - percentHigh)) ? percentLow : percentHigh) / 100;
+
+    return Math.max(1, percentFinal * size);
+}
+
 //draws grid every percent of width and height
 function drawGridPercent(canvas, context, xPercent, yPercent)
 {
     context.clearRect(0, 0, canvas.width, canvas.height);
     context.beginPath();
+    console.log(xPercent, yPercent);
 
-    const xSpacing = canvas.width * xPercent;
-    const ySpacing = canvas.height * yPercent;
+    const xSpacing = findSpacing(xPercent, canvas.width);
+    const ySpacing = findSpacing(yPercent, canvas.height);
 
     for (let x=1; x<canvas.width; x+=xSpacing)
     {
         context.moveTo(x, 0);
         context.lineTo(x, canvas.height);
-        context.stroke();   
     } 
     for (let y=1; y<canvas.height; y+=ySpacing)
     {
         context.moveTo(0, y);
         context.lineTo(canvas.width, y);
-        context.stroke();        
     }
+    context.stroke();        
 }
 
 // Event Listeners
@@ -129,7 +155,7 @@ document.getElementById("fileInput").addEventListener("change", function(event)
             grid.height = image.height;
             
             //redraw grid
-            drawGridPercent(grid, grid_ctx, xSlider.value / 100, ySlider.value / 100)
+            drawGridPercent(grid, grid_ctx, xSlider.value, ySlider.value)
             
             display_ctx.drawImage(image, 0, 0);
             
@@ -211,11 +237,11 @@ creating_dialog.addEventListener("cancel", function(event)
 });
 
 xSlider.addEventListener('input', function(event) {
-    drawGridPercent(grid, grid_ctx, this.value / 100, ySlider.value / 100)
+    drawGridPercent(grid, grid_ctx, this.value, ySlider.value)
 });
 
 ySlider.addEventListener('input', function(event) {
-    drawGridPercent(grid, grid_ctx, xSlider.value / 100, this.value / 100)
+    drawGridPercent(grid, grid_ctx, xSlider.value, this.value)
 });
 
 hideGrid.addEventListener('change', (event) => {
